@@ -16,9 +16,74 @@ try {
     # Resolve directory to absolute path
     $resolvedDir = (Resolve-Path -Path $DirectoryPath).Path
 
+    # DPI Awareness setup (P/Invoke to SetProcessDpiAwarenessContext or SetProcessDPIAware)
+    # DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = -4
+    $loaded = $false
+    try {
+        $null = [WinAPI.DpiUtil]
+        $loaded = $true
+    } catch {
+        $loaded = $false
+    }
+
+    if (-not $loaded) {
+        $dpiCode = @"
+        using System;
+        using System.Runtime.InteropServices;
+
+        namespace WinAPI
+        {
+            public static class DpiUtil
+            {
+                [DllImport("user32.dll", SetLastError = true)]
+                public static extern bool SetProcessDpiAwarenessContext(IntPtr value);
+
+                [DllImport("user32.dll")]
+                public static extern bool SetProcessDPIAware();
+
+                public static bool SetDpiAware()
+                {
+                    try
+                    {
+                        // Attempt to set Per Monitor Aware V2 context (-4)
+                        if (SetProcessDpiAwarenessContext((IntPtr)(-4)))
+                        {
+                            return true;
+                        }
+                    }
+                    catch {}
+                    
+                    try
+                    {
+                        // Attempt to set Per Monitor Aware context (-3)
+                        if (SetProcessDpiAwarenessContext((IntPtr)(-3)))
+                        {
+                            return true;
+                        }
+                    }
+                    catch {}
+
+                    try
+                    {
+                        return SetProcessDPIAware();
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+"@
+        Add-Type -TypeDefinition $dpiCode
+    }
+
     # Load required assemblies
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
+
+    # Call DPI awareness function
+    $null = [WinAPI.DpiUtil]::SetDpiAware()
 
     # Get all screens
     $screens = [System.Windows.Forms.Screen]::AllScreens
