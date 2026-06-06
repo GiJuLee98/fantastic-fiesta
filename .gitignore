@@ -1,1 +1,15 @@
-/temp
+/temp/
+
+# CMake build outputs
+/out/
+
+# Visual Studio / Visual Studio Code artifacts
+/.vs/
+/out/
+/CMakeUserPresets.json
+
+# Compiler artifacts / MSVC build outputs
+*.user
+*.suo
+*.db
+*.opendb
