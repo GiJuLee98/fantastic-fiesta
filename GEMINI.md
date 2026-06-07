@@ -2,7 +2,7 @@
 
 - When reading file contents (such as `.txt`, `.md`, `.cpp`, `.h`), always specify UTF-8 encoding explicitly (e.g., use `Get-Content -Encoding utf8` in PowerShell) to prevent character corruption.
 
-- 버전 : 0.0.2
+- 버전 : 0.0.3
 
 ## Language
 - 사용자에게는 항상 한국어로 응답한다.
@@ -95,6 +95,8 @@ execution 단계에서는 다음 루프를 진행한다.
 ```
 
 생성하는 각 subagent는 Gemini 3.5 Flash (Low) 모델을 사용한다.
+
+- 각 subagent는 작업을 시작하기 전에 반드시 프로젝트 내에 사전 정의된 기존 스킬(예: `.gemini/skills/` 폴더 하위에 위치한 가이드 및 스크립트 도구들)이 존재하는지 먼저 확인해야 하며, 있는 경우 직접 자가 구현(새로운 임시 스크립트 작성 등)을 피하고 기존 스킬을 최우선적으로 재사용 및 활용하여 작업을 수행해야 한다.
 
 subagent 생성에 실패한 경우 진행을 중단하고 사용자에게 보고한다.
 
