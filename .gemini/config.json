@@ -1,5 +1,6 @@
-﻿{
+{
     "enabled_skills":  [
-                           "skill-manager"
+                           "skill-manager",
+                           "visual-validation-helper"
                        ]
 }

@@ -1,0 +1,14 @@
+{
+  "skill_id": "visual-validation-helper",
+  "name": "Visual Validation Helper",
+  "description": "A skill to run GUI applications and take screenshots to assist visual validation.",
+  "permissions": [
+    "filesystem",
+    "execute_scripts"
+  ],
+  "runtime": {
+    "language": "PowerShell",
+    "execution_policy": "Bypass"
+  },
+  "entry_point": "scripts/run.ps1"
+}

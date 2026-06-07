@@ -1,0 +1,23 @@
+# Visual Validation Helper Skill
+
+- **Name**: Visual Validation Helper
+- **Description**: 이 Skill은 대상 GUI 애플리케이션(exe)을 실행하고 화면 스크린샷을 캡처하여 파일 경로를 반환하는 검증 보조 도구입니다. 에이전트(주로 검증 담당 subagent)는 이 도구가 캡처한 스크린샷 이미지 파일을 `view_file`로 열어서 시각적으로 UI 요소와 상태를 검증할 수 있습니다.
+- **Instructions**:
+  - 검증 담당 에이전트는 `launch_and_screenshot` 도구를 호출하여 대상 프로그램 실행 및 스크린샷을 얻습니다.
+  - 실행된 프로그램 창이 화면에 완전히 로드될 때까지 적절한 대기 시간(`wait_ms`)을 설정해야 합니다 (기본값: 2000ms).
+  - 반환된 이미지 경로를 `view_file` 도구로 확인하여, `validation.md`에서 지시하는 UI 요소(예: 창의 유무, 특정 버튼/텍스트 표시 여부, 레이아웃 깨짐 등)가 정상적으로 출력되는지 직접 이미지 분석을 수행해야 합니다.
+  - 이미지 분석 후 검증 결과(성공 여부, 실패 시 구체적인 이유 - 창이 뜨지 않았음, 창은 떴으나 특정 UI 요소가 없음 등, 성공했더라도 특이사항 등)를 분석하여 `execution.md` 형식에 맞춰 기록합니다.
+  - 검증이 완료된 후 실행된 프로세스가 계속 남아서 자원을 차지하지 않도록 `kill_after` 매개변수를 `true`로 설정하는 것을 권장합니다.
+- **Tools**:
+  - `launch_and_screenshot`:
+    - Description: 대상 실행 파일(exe)을 실행하고 일정 시간 대기한 뒤, 전체 화면 스크린샷을 찍어 저장하고 파일 경로 목록을 반환합니다.
+    - Parameters:
+      - `exe_path` (string, required): 실행할 exe 파일의 경로 (절대 경로 또는 프로젝트 루트 기준 상대 경로).
+      - `arguments` (string, optional): exe 실행 시 전달할 명령행 인수.
+      - `wait_ms` (integer, optional): 실행 후 스크린샷을 찍기 전에 대기할 시간(밀리초). 기본값은 `2000`.
+      - `screenshot_prefix` (string, optional): 저장될 스크린샷 파일명의 프리픽스. 기본값은 `validation_screenshot`.
+      - `kill_after` (boolean, optional): 스크린샷 촬영 완료 후 실행한 프로세스를 강제 종료할지 여부. 기본값은 `true`.
+    - Returns:
+      - `status` (string): 실행 성공 여부 (`Success` 또는 `Failed`)
+      - `log` (string): 실행 및 캡처 작업 로그 메시지
+      - `screenshots` (array of string): 생성된 스크린샷 이미지 파일의 절대 경로 목록
