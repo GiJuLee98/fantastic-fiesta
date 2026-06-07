@@ -1,0 +1,44 @@
+# Skill Manager Skill
+
+- **Name**: Skill Manager
+- **Description**: 이 Skill은 Gemini 에이전트의 스킬들을 생성, 조회, 수정, 삭제하는 스킬 관리 도구입니다.
+- **Instructions**:
+  - 에이전트는 새로운 스킬을 생성하거나, 기존 스킬을 수정 및 삭제할 때 이 스킬의 도구들을 사용해야 합니다.
+  - 새 스킬 생성이나 수정 시에는 사용자와의 대화를 통해 필요한 매개변수를 단계별로 수집해야 합니다.
+  - 스킬 수정 전에는 백업이 생성되도록 유도하고, 최종 적용 전에 예상 변경 사항(Diff 등)을 사용자에게 확인받아야 합니다.
+  - 스킬 삭제 전에는 정말 삭제할 것인지 사용자에게 명확히 컨펌을 받아서 오작동을 예방해야 합니다.
+- **Tools**:
+  - `get_skills_list`:
+    - Description: 등록된 모든 스킬 폴더 목록 및 각 스킬의 SKILL.md 개요를 읽어 반환합니다.
+    - Parameters: None
+    - Returns:
+      - `status` (string): 실행 결과 상태 (`Success` 또는 `Failed`)
+      - `log` (string): 스킬 목록 조회 결과 또는 에러 메시지 (성공 시 JSON 또는 텍스트 형식의 스킬 리스트)
+  - `create_new_skill`:
+    - Description: 신규 스킬 폴더를 생성하고 뼈대 파일(SKILL.md, config.json, scripts/run.ps1, HISTORY.md)을 작성하며, 루트 설정 파일에 활성화 처리합니다.
+    - Parameters:
+      - `skill_id` (string, required): 생성할 스킬의 고유 식별자 (영문 소문자와 하이픈(-) 조합).
+      - `skill_name` (string, required): 스킬의 직관적인 이름.
+      - `description` (string, required): 스킬의 기능에 대한 설명.
+      - `tools_json` (string, optional): 스킬이 제공할 도구들에 대한 JSON 명세 정의.
+      - `dialog_summary` (string, required): HISTORY.md 기록용 대화 요약 정보.
+    - Returns:
+      - `status` (string): 실행 결과 상태 (`Success` 또는 `Failed`)
+      - `log` (string): 작업 실행 로그 및 성공 여부 메시지
+  - `update_existing_skill`:
+    - Description: 지정된 스킬의 파일들을 업데이트하고 HISTORY.md 히스토리를 갱신합니다.
+    - Parameters:
+      - `skill_id` (string, required): 수정할 스킬의 고유 식별자.
+      - `update_targets` (string, required): 수정할 파일 목록 및 변경 내용 설명.
+      - `file_contents` (string, optional): 파일 직접 덮어쓰기용 JSON 구조.
+      - `dialog_summary` (string, required): HISTORY.md 누적 기록용 대화 요약 정보.
+    - Returns:
+      - `status` (string): 실행 결과 상태 (`Success` 또는 `Failed`)
+      - `log` (string): 작업 실행 로그 및 성공 여부 메시지
+  - `delete_existing_skill`:
+    - Description: 지정된 스킬의 설정을 루트 구성에서 제거하고 스킬 폴더를 삭제합니다.
+    - Parameters:
+      - `skill_id` (string, required): 삭제할 스킬의 고유 식별자.
+    - Returns:
+      - `status` (string): 실행 결과 상태 (`Success` 또는 `Failed`)
+      - `log` (string): 작업 실행 로그 및 성공 여부 메시지

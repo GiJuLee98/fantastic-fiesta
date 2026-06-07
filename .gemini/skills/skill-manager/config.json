@@ -1,0 +1,14 @@
+{
+  "skill_id": "skill-manager",
+  "name": "Skill Manager",
+  "description": "A skill to manage (create, read, update, delete) Gemini Agent Skills.",
+  "permissions": [
+    "filesystem",
+    "execute_scripts"
+  ],
+  "runtime": {
+    "language": "PowerShell",
+    "execution_policy": "Bypass"
+  },
+  "entry_point": "scripts/manage.ps1"
+}
