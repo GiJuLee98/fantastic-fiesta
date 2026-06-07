@@ -14,6 +14,7 @@ public:
 private:
     std::unique_ptr<BaseDialog> sub_dialog_1_;
     std::unique_ptr<BaseDialog> sub_dialog_2_;
+    std::unique_ptr<BaseDialog> sub_dialog_opencv_;
 };
 
 #endif // INTEGRATION_DIALOG_H
