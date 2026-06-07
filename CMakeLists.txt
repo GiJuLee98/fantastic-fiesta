@@ -36,7 +36,7 @@ target_include_directories(imgui PUBLIC external/imgui external/imgui/backends)
 target_link_libraries(imgui PRIVATE glfw glad)
 
 # 실행 파일 생성
-add_executable(FantasticFiesta src/main.cpp)
+add_executable(FantasticFiesta src/main.cpp src/IntegrationDialog.cpp)
 
 # 의존성 링크
 target_link_libraries(FantasticFiesta PRIVATE glfw glad imgui opengl32)

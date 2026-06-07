@@ -4,6 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <iostream>
+#include "IntegrationDialog.h"
 
 // GLFW 에러 콜백 함수
 void glfw_error_callback(int error, const char* description) {
@@ -64,6 +65,8 @@ int main() {
     // 기본 배경색 설정 (Clear Color)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    IntegrationDialog integration_dialog;
+
     // 6. 메인 이벤트 루프
     while (!glfwWindowShouldClose(window)) {
         // 이벤트 폴링
@@ -80,11 +83,14 @@ int main() {
 
         // 테스트를 위한 간단한 제어 패널 윈도우
         {
+            ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
             ImGui::Begin("Fantastic Fiesta Control Panel");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::ColorEdit3("Clear Color", (float*)&clear_color);
             ImGui::End();
         }
+
+        integration_dialog.Draw();
 
         // ImGui 렌더링
         ImGui::Render();

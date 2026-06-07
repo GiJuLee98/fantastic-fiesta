@@ -1,0 +1,35 @@
+# 011-tab-dialog: design
+
+1. 추상 클래스 BaseDialog 설계 (req:4-1) [1]
+    - `BaseDialog.h` 파일을 생성하여 공통 인터페이스 역할을 하는 `BaseDialog` 추상 클래스를 작성한다. [1-1]
+    - 다이얼로그의 수명 관리를 위해 가상 소멸자 `virtual ~BaseDialog() = default;`를 정의한다. [1-2]
+    - 모든 다이얼로그가 UI를 그릴 때 호출하는 순수 가상 함수 `virtual void Draw() = 0;`를 선언한다. [1-3]
+
+2. 하위 다이얼로그 클래스 설계 (req:2, 4-2) [2]
+    - `SubDialog1.h`에 `BaseDialog`를 상속받는 `SubDialog1` 클래스를 작성한다. (req:4-2) [2-1]
+        - `Draw()` 메서드를 재정의(override)하여 첫 번째 하위 탭 내부를 그리도록 한다. (req:2-1) [2-1-1]
+        - `Draw()` 내부에서 구별을 위해 `ImGui::Text("sub_dialog_1")`을 호출한다. (req:2-1-2) [2-1-2]
+    - `SubDialog2.h`에 `BaseDialog`를 상속받는 `SubDialog2` 클래스를 작성한다. (req:4-2) [2-2]
+        - `Draw()` 메서드를 재정의하여 두 번째 하위 탭 내부를 그리도록 한다. (req:2-2) [2-2-1]
+        - `Draw()` 내부에서 구별을 위해 `ImGui::Text("sub_dialog_2")`을 호출한다. (req:2-2-2) [2-2-2]
+
+3. 통합 다이얼로그 IntegrationDialog 클래스 설계 (req:1, 4-2, 4-4) [3]
+    - `IntegrationDialog.h` 및 `IntegrationDialog.cpp`에 `BaseDialog`를 상속받는 `IntegrationDialog` 클래스를 작성한다. (req:4-2) [3-1]
+    - `IntegrationDialog`는 멤버 변수로 `std::unique_ptr<BaseDialog> sub_dialog_1_` 및 `std::unique_ptr<BaseDialog> sub_dialog_2_`를 소유하며, 생성자에서 이를 초기화하여 하위 다이얼로그 객체를 생성 및 관리한다. (req:4-4) [3-2]
+    - `Draw()` 메서드를 재정의하여 "dlg_integration" 타이틀을 갖는 윈도우를 렌더링한다. (req:1-1) [3-3]
+        - `ImGui::Begin("dlg_integration")`을 통해 윈도우를 그린다. (req:1-1) [3-3-1]
+        - 윈도우 크기에 맞게 내부 탭바가 배치되도록 `ImGui::BeginTabBar("IntegrationTabBar")`를 호출한다. (req:1-2, 1-3) [3-3-2]
+        - `ImGui::BeginTabItem("sub_dialog_1")` 내부에서 `sub_dialog_1_->Draw()`를 호출하여 하위 다이얼로그 1을 렌더링한다. (req:2-1) [3-3-3]
+        - `ImGui::BeginTabItem("sub_dialog_2")` 내부에서 `sub_dialog_2_->Draw()`를 호출하여 하위 다이얼로그 2을 렌더링한다. (req:2-2) [3-3-4]
+        - 탭 바와 윈도우 그리기가 완료되면 `ImGui::EndTabBar()` 및 `ImGui::End()`를 호출한다. (req:1-2) [3-3-5]
+
+4. main.cpp 연동 및 CMakeLists.txt 설정 설계 (req:4-3, 4-5, 4-6) [4]
+    - `src/main.cpp`에서 `IntegrationDialog.h`를 include 한다. (req:4-3) [4-1]
+    - `main` 함수에서 `IntegrationDialog` 객체를 1개 생성하여 관리한다. (req:4-3) [4-2]
+    - 메인 이벤트 루프의 ImGui 렌더링 영역 내에서 기존의 테스트 패널 및 데모 창을 삭제하지 않고 유지하면서, 생성한 `IntegrationDialog` 객체의 `Draw()`도 추가로 호출하여 병행 렌더링한다. (req:4-3, 4-5) [4-3]
+    - 기존의 제어 패널 창("Fantastic Fiesta Control Panel")에 대해서는 `ImGui::Begin("Fantastic Fiesta Control Panel")` 호출 직전에 `ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);`를 적용해 초기 시작 시 접힌 상태로 렌더링되게 설계한다. (req:4-6) [4-4]
+    - `CMakeLists.txt`에 새로 생성한 소스 파일(`src/IntegrationDialog.cpp` 등 필요한 cpp 파일)들을 빌드 대상 소스 목록에 추가하여 정상 컴파일되도록 설계한다. [4-5]
+
+5. 빌드 및 수동 스크린샷 검증 설계 (req:3) [5]
+    - `powershell -ExecutionPolicy Bypass -File .\scripts\build_all_configs.ps1`을 실행하여 전체 빌드가 성공적으로 끝나는지 검증한다. (req:3-1) [5-1]
+    - 빌드된 실행 파일을 실행하여 "dlg_integration" 창과 탭이 정상 작동하는지 확인하고, 실행 중인 애플리케이션의 화면을 캡처하여 시각적으로 검증을 마친 후, 해당 캡처본 이미지 파일은 저장하지 않고 안전하게 삭제한다. (req:3-2) [5-2]
