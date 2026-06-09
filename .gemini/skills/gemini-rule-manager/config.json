@@ -1,0 +1,14 @@
+﻿{
+    "skill_id":  "gemini-rule-manager",
+    "name":  "GEMINI.md Rule Manager",
+    "description":  "프로젝트의 GEMINI.md 파일을 안전하게 조회, 업데이트, 백업 및 버전 관리를 지원하는 스킬",
+    "permissions":  [
+                        "filesystem",
+                        "execute_scripts"
+                    ],
+    "runtime":  {
+                    "execution_policy":  "Bypass",
+                    "language":  "PowerShell"
+                },
+    "entry_point":  "scripts/run.ps1"
+}

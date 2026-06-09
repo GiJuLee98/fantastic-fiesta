@@ -1,6 +1,7 @@
-{
+﻿{
     "enabled_skills":  [
                            "skill-manager",
-                           "visual-validation-helper"
+                           "visual-validation-helper",
+                           "gemini-rule-manager"
                        ]
 }

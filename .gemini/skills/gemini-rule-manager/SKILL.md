@@ -1,0 +1,42 @@
+# GEMINI.md Rule Manager Skill
+
+- **Name**: GEMINI.md Rule Manager
+- **Description**: 프로젝트의 GEMINI.md 파일을 안전하게 조회, 업데이트, 백업 및 버전 관리를 지원하는 스킬
+- **Instructions**:
+  - 이 스킬은 GEMINI.md Rule Manager 작업을 위해 사용됩니다.
+- **Tools**:
+  - `prepare_draft`:
+    - Description: GEMINI.md의 복사본(GEMINI.tmp.md)을 생성하여 수정할 준비를 합니다. 이미 임시 파일이 존재하는 경우 이를 알려줍니다.
+    - Parameters: None
+    - Returns:
+      - `status` (string): 성공 여부
+      - `log` (string): 실행 결과 로그
+      - `content` (string): 현재 임시본 또는 원본 내용
+  - `update_draft`:
+    - Description: 임시 파일(GEMINI.tmp.md)에 새로운 규칙 수정본을 업데이트합니다.
+    - Parameters:
+      - `content` (string, required): 수정할 임시 파일의 전체 내용
+    - Returns:
+      - `status` (string): 성공 여부
+      - `log` (string): 실행 결과 로그
+  - `compare_rules`:
+    - Description: 원본 GEMINI.md와 임시 파일(GEMINI.tmp.md) 간의 차이점(Diff)을 분석하여 반환합니다.
+    - Parameters: None
+    - Returns:
+      - `status` (string): 성공 여부
+      - `log` (string): 실행 결과 로그
+      - `diff` (string): 원본과 임시 파일 간의 차이점(Diff) 내용
+  - `commit_changes`:
+    - Description: 사용자 승인 하에 임시 파일(GEMINI.tmp.md)을 원본 GEMINI.md에 덮어쓰고, 임시 파일을 삭제하며 버전을 업데이트합니다.
+    - Parameters:
+      - `version` (string, required): 업데이트할 규칙 버전
+      - `change_summary` (string, required): 수정 사유 및 작업 요약
+    - Returns:
+      - `status` (string): 성공 여부
+      - `log` (string): 실행 결과 로그
+  - `discard_draft`:
+    - Description: 진행 중이던 규칙 수정을 취소하고 임시 파일(GEMINI.tmp.md)을 삭제합니다.
+    - Parameters: None
+    - Returns:
+      - `status` (string): 성공 여부
+      - `log` (string): 실행 결과 로그
